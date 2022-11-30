@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.7'
 
 services:
     web:
@@ -6,5 +6,16 @@ services:
         command: gunicorn --workers=4 lsal_app:server -b:8080
         volumes:
             -   ./code/:/usr/src/code/
+        expose:
+            -   8080
+
+    nginx:
+        image: nginx:1.20-alpine
+        restart: unless-stopped
+        volumes:
+            - ./data/nginx:/etc/nginx/conf.d
         ports:
-            -   "8080:8080"
+            - "80:80"
+        depends_on:
+            - web
+        command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
