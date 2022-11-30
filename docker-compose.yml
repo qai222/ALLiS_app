@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+    web:
+        build: .
+        command: gunicorn --workers=4 lsal_app:server -b:8080
+        volumes:
+            -   ./code/:/usr/src/code/
+        ports:
+            -   "80:8080"
