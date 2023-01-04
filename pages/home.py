@@ -1,6 +1,6 @@
 from dash import register_page, dcc
 
-from lsal_dash import *
+from allis_dash import FOLDER_APP, html
 
 register_page(__name__, path='/', description="Home")
 
