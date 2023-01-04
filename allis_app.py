@@ -1,12 +1,13 @@
 import dash
-from dash import Dash, dcc
+from dash import Dash
 
-from lsal_dash import *
+from allis_dash import *
+from allis_dash.mongo_connections import MongoHasData
 
 app = Dash(
     name=__name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP],
-    use_pages=True,
+    use_pages=MongoHasData,
     assets_folder=FOLDER_ASSETS,
 )
 
@@ -38,7 +39,10 @@ sidebar = html.Div(
     style=SIDEBAR_STYLE,
 )
 
-content = html.Div(id="page-content", style=CONTENT_STYLE, children=[dash.page_container])
+if MongoHasData:
+    content = html.Div(id="page-content", style=CONTENT_STYLE, children=[dash.page_container])
+else:
+    content = html.Div("not data found in MongoDB, did you forget to import?")
 
 app.layout = html.Div(
     [

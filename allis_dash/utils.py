@@ -1,4 +1,5 @@
 import gzip
+import itertools
 import json
 import os.path
 import pickle
@@ -101,3 +102,24 @@ def rgb_to_rgba(rgb: str, a: float):
     rgba = rgb.strip().strip(")")
     rgba += ", {:.4f})".format(a)
     return rgba.replace("rgb", "rgba")
+
+
+def label_to_svg_column(lab: str) -> str:
+    svg_path = f"assets/svg/{lab}.svg"
+    return f"![structure]({svg_path})"
+
+
+def sort_and_group(data, keyf):
+    groups = []
+    unique_keys = []
+    data = sorted(data, key=keyf)
+    for k, g in itertools.groupby(data, keyf):
+        groups.append(list(g))
+        unique_keys.append(k)
+    return unique_keys, groups
+
+
+def remove_list_dup(seq):  # keep order https://stackoverflow.com/questions/480214
+    seen = set()
+    seen_add = seen.add
+    return [x for x in seq if not (x in seen or seen_add(x))]

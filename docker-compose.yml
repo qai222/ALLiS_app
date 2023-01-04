@@ -3,7 +3,9 @@ version: '3.7'
 services:
     web:
         build: .
-        command: gunicorn --workers=4 lsal_app:server -b:8080
+        command: gunicorn --workers=4 allis_app:server -b:8080
+        environment:
+            MONGODB_CONNSTRING: "mongodb://${ALLIS_MONGO_USR}:${ALLIS_MONGO_PWD}@mongo:27017"
         volumes:
             -   ./code/:/usr/src/code/
         expose:
@@ -19,3 +21,15 @@ services:
         depends_on:
             - web
         command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+
+    mongo:
+        image: mongo:6.0
+        restart: unless-stopped
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: "${ALLIS_MONGO_USR}"
+            MONGO_INITDB_ROOT_PASSWORD: "${ALLIS_MONGO_PWD}"
+            MONGO_INITDB_DATABASE: ALLiS
+        volumes:
+            - ./data/mongo_db:/data/db
+        ports:
+            - "27017:27017"
